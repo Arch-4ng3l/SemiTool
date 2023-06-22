@@ -74,8 +74,8 @@ def output(arr, questionNum, total):
     count = 0
     text = ""
     for i in arr:
-        text += "|" + str(fragen[questionNum][count]) + " → " + str(i) + "\n"
-        text += "|Prozent: " + format((i/total)*100, ".2f") + "%\n"
+        text += str(fragen[questionNum][count]) + " →  [" + str(i) + "] > "
+        text += " Prozent:  " + format((i/total)*100, ".2f") + "%\n"
         count += 1
 
     return text
@@ -107,6 +107,13 @@ def onClick(window, layout, labels, text):
         masc, fem, div = 0, 0, 0
         mascUse, femUse, divUse = [], [], []
         questionNum = int(text) - 1
+        if questionNum > 15 or questionNum < 0:
+
+            labels[0].setText("Kein Richtiger Input")
+            labels[1].setText("")
+            labels[2].setText("")
+            labels[3].setText("")
+            return
         colToCheck = questionNum + 4
         for i in fragen[questionNum]:
             mascUse.append(0)
@@ -115,6 +122,7 @@ def onClick(window, layout, labels, text):
         for row in reader:
             if count == 0:
                 count = 1
+                labels[0].setText(row[colToCheck])
             else:
                 text = row[3]
                 if text.startswith("M"):
@@ -129,27 +137,27 @@ def onClick(window, layout, labels, text):
                     div += 1
                     add(questionNum, colToCheck, row, divUse)
 
-    # Männlich: 
-    textM = "+-----------------------------------------------+\n"
-    textM += "|Gesamte Anzahl männlicher Befragter: " + str(masc) + "\n"
+    # Männlich:
+    textM = "------------------------------------------------\n"
+    textM += "Gesamte Anzahl männlicher Befragter: " + str(masc) + "\n"
+    textM += "------------------------------------------------\n"
     textM += output(mascUse, questionNum, masc)
-    textM += "\n+-----------------------------------------------+"
-
+    textM += "------------------------------------------------"
     # Weiblich
-    textF = "+-----------------------------------------------+\n"
-    textF += "|Gesamte Anzahl weiblicher Befragter: " + str(fem) + "\n"
+    textF = "------------------------------------------------\n"
+    textF += "Gesamte Anzahl weiblicher Befragter: " + str(fem) + "\n"
+    textF += "------------------------------------------------\n"
     textF += output(femUse, questionNum, fem)
-    textF += "\n+-----------------------------------------------+"
-
+    textF += "------------------------------------------------"
     # Divers
-
-    textD = "+-----------------------------------------------+\n"
-    textD += "|Gesamte Anzahl diverser Befragter: " + str(div) + "\n"
+    textD = "------------------------------------------------\n"
+    textD += "Gesamte Anzahl diverser Befragter: " + str(div) + "\n"
+    textD += "------------------------------------------------\n"
     textD += output(divUse, questionNum, div)
-    textD += "\n+-----------------------------------------------+"
-    labels[0].setText(textM)
-    labels[1].setText(textF)
-    labels[2].setText(textD)
+    labels += "------------------------------------------------"
+    labels[1].setText(textM)
+    labels[2].setText(textF)
+    labels[3].setText(textD)
 
 
 def main():
@@ -159,7 +167,7 @@ def main():
 
     layout = QVBoxLayout()
     label = QLabel(window)
-    label.setText("Welche Frage Willst du Analysieren")
+    label.setText("Welche Frage Willst du nach Geschlecht Analysieren")
 
     label.setFont(QFont("Calibri", 16))
     inputBox = QLineEdit()
@@ -168,25 +176,25 @@ def main():
         i.deleteLater()
     labels = []
     button = QPushButton("Start")
+    labelQuestion = QLabel(window)
     label1 = QLabel(window)
     label2 = QLabel(window)
     label3 = QLabel(window)
-
-    label1.setFont(QFont("Arial", 16))
-    label2.setFont(QFont("Arial", 16))
-    label3.setFont(QFont("Arial", 16))
-
+    labelQuestion.setFont(QFont("Calibri", 14))
+    label1.setFont(QFont("Calibri", 12))
+    label2.setFont(QFont("Calibri", 12))
+    label3.setFont(QFont("Calibri", 12))
+    labels.append(labelQuestion)
     labels.append(label1)
     labels.append(label2)
     labels.append(label3)
-    print(len(labels))
 
     button.clicked.connect(lambda: onClick(window, layout, labels, inputBox.text()))
 
-    layout.addWidget(label)
     for i in labels:
         layout.addWidget(i)
 
+    layout.addWidget(label)
     layout.addWidget(inputBox)
     layout.addWidget(button)
     window.setLayout(layout)
