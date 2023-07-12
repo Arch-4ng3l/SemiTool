@@ -2,7 +2,7 @@
 
 import matplotlib.pyplot as plt
 import csv
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QVBoxLayout, QApplication, QWidget, QLineEdit, QPushButton, QLabel
 from PyQt5.QtGui import QFont
 
 frage1 = ("Mehrmals am Tag",
